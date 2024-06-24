@@ -4,12 +4,6 @@
 // Created by Speedyfriend67 on 24.06.24
 //
  
-//
-// GradientPoint.swift
-//
-// Created by Speedyfriend67 on 24.06.24
-//
- 
 import SwiftUI
 
 class GradientPoint: Identifiable, ObservableObject, Equatable {
