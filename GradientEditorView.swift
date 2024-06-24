@@ -25,25 +25,28 @@ struct GradientEditorView: View {
                         .edgesIgnoringSafeArea(.all)
                         .gesture(DragGesture(minimumDistance: 0).onEnded { value in
                             let tapLocation = value.location
-                            let newPoint = CGPoint(x: tapLocation.x, y: tapLocation.y)
-                            points.append(GradientPoint(position: newPoint, color: .random))
+                            let newPoint = GradientPoint(position: CGPoint(x: tapLocation.x, y: tapLocation.y), color: .random)
+                            points.append(newPoint)
                         })
                 }
-                ForEach($points) { $point in
+                ForEach(points.indices, id: \.self) { index in
                     Circle()
-                        .fill(point.color)
+                        .fill(points[index].color)
                         .frame(width: selectedPointSize, height: selectedPointSize)
-                        .position(point.position)
+                        .position(points[index].position)
                         .gesture(DragGesture().onChanged { value in
-                            point.position = value.location
+                            points[index].position = value.location
                         })
                         .contextMenu {
-                            ColorPicker("Pick Color", selection: $point.color)
+                            ColorPicker("Pick Color", selection: Binding(
+                                get: { points[index].color },
+                                set: { newColor in points[index].color = newColor }
+                            ))
                             Button("Undo Color Change") {
-                                point.undoColorChange()
+                                points[index].undoColorChange()
                             }
                             Button("Remove") {
-                                points.removeAll { $0.id == point.id }
+                                points.remove(at: index)
                             }
                         }
                 }
